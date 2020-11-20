@@ -133,7 +133,7 @@ class TypeResolver {
                     milliseconds += value * TimeUnits[key].value;
                 }
 
-                return milliseconds;
+                return milliseconds || null;
             },
 
             [ArgumentTypes.USER]: async (message, phrase) => {
