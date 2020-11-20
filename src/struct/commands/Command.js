@@ -57,8 +57,6 @@ class Command extends AkairoModule {
             separator
         });
 
-        console.log(this.id);
-
         this.arguments = args.map(arg => [arg.id, new Argument(this, arg)]);
 
         this.argumentRunner = new ArgumentRunner(this);
