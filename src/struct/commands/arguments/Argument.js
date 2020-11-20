@@ -708,6 +708,7 @@ module.exports = Argument;
  * - `string` does not cast to any type.
  * - `lowercase` makes the input lowercase.
  * - `uppercase` makes the input uppercase.
+ * - `timespan` casts a time string to the milliseconds it represents.
  * - `charCodes` transforms the input to an array of char codes.
  * - `number` casts to a number.
  * - `integer` casts to an integer.

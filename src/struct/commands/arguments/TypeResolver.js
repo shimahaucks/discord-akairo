@@ -1,4 +1,4 @@
-const { ArgumentTypes } = require('../../../util/Constants');
+const { ArgumentTypes, TimeUnits } = require('../../../util/Constants');
 const { Collection } = require('discord.js');
 const { URL } = require('url');
 
@@ -122,9 +122,25 @@ class TypeResolver {
                 return color;
             },
 
-            [ArgumentTypes.USER]: (message, phrase) => {
+            [ArgumentTypes.TIMESPAN]: (message, phrase) => {
+                const regexString = Object.entries(TimeUnits).map(([name, { label }]) => String.raw`(?:(?<${name}>-?(?:\d+)?\.?\d+) *${label})?`).join('\\s*');
+                const match = new RegExp(`^${regexString}$`, 'i').exec(phrase);
+                if (!match) return null;
+
+                let milliseconds = 0;
+                for (const key in match.groups) {
+                    const value = Number(match.groups[key] || 0);
+                    milliseconds += value * TimeUnits[key].value;
+                }
+
+                return milliseconds;
+            },
+
+            [ArgumentTypes.USER]: async (message, phrase) => {
                 if (!phrase) return null;
-                return this.client.util.resolveUser(phrase, this.client.users.cache);
+                const user = await this.client.util.resolveUser(phrase, this.client.users);
+
+                return user;
             },
 
             [ArgumentTypes.USERS]: (message, phrase) => {
