@@ -111,6 +111,24 @@ class TypeResolver {
                 return new Date(timestamp);
             },
 
+            [ArgumentTypes.DATEORTIME]: (message, phrase) => {
+                const regexString = Object.entries(TimeUnits).map(([name, { label }]) => String.raw`(?:(?<${name}>-?(?:\d+)?\.?\d+) *${label})?`).join('\\s*');
+                const match = new RegExp(`^${regexString}$`, 'i').exec(phrase);
+                if (!match) return null;
+
+                let milliseconds = 0;
+                for (const key in match.groups) {
+                    const value = Number(match.groups[key] || 0);
+                    milliseconds += value * TimeUnits[key].value;
+                }
+
+                if (milliseconds) return milliseconds;
+
+                const timestamp = Date.parse(phrase);
+                if (isNaN(timestamp)) return null;
+                return new Date(timestamp);
+            },
+
             [ArgumentTypes.COLOR]: (message, phrase) => {
                 if (!phrase) return null;
 
