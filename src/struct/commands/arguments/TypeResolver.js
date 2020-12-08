@@ -114,15 +114,16 @@ class TypeResolver {
             [ArgumentTypes.DATEORTIME]: (message, phrase) => {
                 const regexString = Object.entries(TimeUnits).map(([name, { label }]) => String.raw`(?:(?<${name}>-?(?:\d+)?\.?\d+) *${label})?`).join('\\s*');
                 const match = new RegExp(`^${regexString}$`, 'i').exec(phrase);
-                if (!match) return null;
+                if (match) {
+                    let milliseconds = 0;
+                    for (const key in match.groups) {
+                        const value = Number(match.groups[key] || 0);
+                        milliseconds += value * TimeUnits[key].value;
+                    }
 
-                let milliseconds = 0;
-                for (const key in match.groups) {
-                    const value = Number(match.groups[key] || 0);
-                    milliseconds += value * TimeUnits[key].value;
+                    if (milliseconds) return milliseconds;
                 }
 
-                if (milliseconds) return milliseconds;
 
                 const timestamp = Date.parse(phrase);
                 if (isNaN(timestamp)) return null;
