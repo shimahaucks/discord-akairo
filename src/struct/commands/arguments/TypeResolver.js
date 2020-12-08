@@ -121,7 +121,7 @@ class TypeResolver {
                         milliseconds += value * TimeUnits[key].value;
                     }
 
-                    if (milliseconds) return milliseconds;
+                    if (milliseconds) return new Date(Date.now() + milliseconds);
                 }
 
 
